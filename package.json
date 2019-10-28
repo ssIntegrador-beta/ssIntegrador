@@ -1,0 +1,33 @@
+{
+  "name": "poc-nfce",
+  "description": "POC NFCE",
+  "author": "César Felipe<cesar@ipe.digital>",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "chokidar": "^3.2.2",
+    "express": "^4.17.1",
+    "fastify-static": "^2.5.0"
+  },
+  "build": {
+    "appId": "nfce.poc.ssotica.com.br",
+    "productName": "(POC) ssÓtica - Integrador NFCE",
+    "icon": "./app/assets/logo.png",
+    "mac": {
+      "category": "Utility"
+    },
+    "linux": {
+      "category": "Utility"
+    }
+  },
+  "devDependencies": {
+    "electron": "^7.0.0",
+    "electron-builder": "^21.2.0"
+  }
+}
