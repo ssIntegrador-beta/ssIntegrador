@@ -1,36 +1,66 @@
 "use strict"
 
-const events     = require("events")
-const eventEmitter = new events.EventEmitter()
+const { ipcRenderer } = require("electron")
 
-let $inputEl, $outputEl
+document.addEventListener('DOMContentLoaded', () => {
 
-const getInputElement = () => $inputEl = $inputEl || document.getElementById('input')
-const getOutputElement = () => $outputEl = $outputEl || document.getElementById('output')
+    /**
+     * Gerencia se alguma nota está sendo processada no momento
+     * @type {boolean}
+     */
+    let isProcessing = false
 
-window.addEventListener('DOMContentLoaded', () => {
-    getInputElement()
-    getOutputElement()
-})
+    /**
+     * Botão de status da aplicação(online|offline|processando)
+     * @type {Element}
+     */
+    let buttonStatus = document.querySelector('.app-status-button')
 
-eventEmitter.on('input-file:added', ({file, fileName, dir}) => {
+    /**
+     * Verifica o status de conexão de internet e atualiza o botão
+     */
+    const handleNetworkStatus = () => {
+        if(!isProcessing){
+            updateButtonUI(
+                navigator.onLine ? 'online' : 'offline',
+                navigator.onLine ? 'Conectado' : 'Desconectado'
+            )
+        }
+    }
 
-    let p = document.createElement('p')
-    p.textContent = file
+    /**
+     * Atualiza a classe e o texto do botão dependendo do seu status
+     * @param className
+     * @param text
+     */
+    const updateButtonUI = (className, text) => {
+        buttonStatus.classList  = 'app-status-button '+className
 
-    $inputEl.innerHTML += `O arquivo <b>"${fileName}"</b> foi criado em <b>${dir.input}</b>.<br>`
-    $inputEl.appendChild(p)
-    $inputEl.innerHTML += '<br>'
+        setTimeout(() => buttonStatus.textContent = text, 200)
+    }
 
-})
+    /**
+     * Atualiza o estado do botão para processando
+     */
+    ipcRenderer.on('start-processing', () => {
+        isProcessing = true
+        updateButtonUI('loading', 'Processando')
+    })
 
-eventEmitter.on('output-file:added', ({file, fileName, dir}) => {
+    /**
+     * Atualiza o estado do botão de acordo com o estado da internet
+     */
+    ipcRenderer.on('end-processing', () => {
+        isProcessing = false
+        handleNetworkStatus()
+    })
 
-    let p = document.createElement('p')
-    p.textContent = file
+    /**
+     * Adiciona os eventos de mudança de internet
+     */
+    window.addEventListener('online',  handleNetworkStatus)
+    window.addEventListener('offline',  handleNetworkStatus)
 
-    $outputEl.innerHTML += `O arquivo <b>"${fileName}"</b> foi criado em <b>${dir.output}</b>.<br>`
-    $outputEl.appendChild(p)
-    $outputEl.innerHTML += '<br>'
+    handleNetworkStatus()
 
 })

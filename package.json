@@ -1,6 +1,6 @@
 {
-  "name": "poc-nfce",
-  "description": "POC NFCE",
+  "name": "ssotica-integrador",
+  "description": "ssÓtica integrador",
   "author": "César Felipe<cesar@ipe.digital>",
   "version": "1.0.0",
   "main": "index.js",
@@ -11,19 +11,24 @@
     "dist": "electron-builder"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "chokidar": "^3.2.2",
     "express": "^4.17.1",
-    "fastify-static": "^2.5.0"
+    "fast-xml-parser": "^3.15.0",
+    "multiparty": "^4.2.1"
   },
   "build": {
-    "appId": "nfce.poc.ssotica.com.br",
-    "productName": "(POC) ssÓtica - Integrador NFCE",
+    "appId": "nfce.integrador.ssotica.com.br",
+    "productName": "ssÓtica - Integrador",
     "icon": "./app/assets/logo.png",
     "mac": {
-      "category": "Utility"
+      "category": "Office"
     },
     "linux": {
-      "category": "Utility"
+      "category": "Office"
+    },
+    "windows": {
+      "category": "Office"
     }
   },
   "devDependencies": {
