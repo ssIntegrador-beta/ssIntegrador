@@ -1,7 +1,8 @@
 {
-  "name": "ssotica-integrador",
-  "description": "ssÓtica integrador",
-  "author": "César Felipe<cesar@ipe.digital>",
+  "name": "ssIntegrador",
+  "description": "ssIntegrador",
+  "author": "Ipê digital",
+  "private": true,
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -11,23 +12,22 @@
     "dist": "electron-builder"
   },
   "dependencies": {
+    "auto-launch": "^5.0.5",
     "body-parser": "^1.19.0",
     "chokidar": "^3.2.2",
     "express": "^4.17.1",
     "fast-xml-parser": "^3.15.0",
+    "he": "^1.2.0",
     "multiparty": "^4.2.1"
   },
   "build": {
     "appId": "nfce.integrador.ssotica.com.br",
-    "productName": "ssÓtica - Integrador",
+    "productName": "ssIntegrador",
     "icon": "./app/assets/logo.png",
     "mac": {
       "category": "Office"
     },
     "linux": {
-      "category": "Office"
-    },
-    "windows": {
       "category": "Office"
     }
   },

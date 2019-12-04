@@ -8,5 +8,18 @@ const parser = require("fast-xml-parser")
  * @returns {any}
  */
 module.exports = xml => {
-    return parser.parse(xml)
+
+    const options = {
+        attributeNamePrefix : "",
+        attrNodeName: "Attributes",
+        textNodeName : "#text",
+        ignoreAttributes : false,
+        ignoreNameSpace : false,
+        allowBooleanAttributes : false,
+        parseNodeValue : true,
+        parseAttributeValue : true,
+        trimValues: true,
+    }
+
+    return parser.parse(xml, options)
 }

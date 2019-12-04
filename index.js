@@ -7,11 +7,14 @@
 const electron     = require("electron")
 const url          = require("url")
 const path         = require("path")
+const AutoLaunch   = require("auto-launch")
 
 /**
  * Importa o módulo responsável por gerenciar os eventos
  */
 const notifier = require("./modules/notifier")
+
+const dispatch = (type, payload) => mainWindow.webContents.send(type, payload)
 
 /**
  * Importando alguns componentes do electron
@@ -98,10 +101,11 @@ const createMainWindow = () => {
          * Caso o item não tenha sido fechado via bandeja, o sistema vai cancelar o evento e apenas esconder a aplicação
          * para a bandeja
          */
-        if(wasClosedByTray) {
+        if(!wasClosedByTray) {
             event.preventDefault()
             mainWindow.hide()
         }
+        
     })
 
 }
@@ -131,6 +135,7 @@ const createTray = () => {
         {
             label: 'Fechar Integrador',
             click: function(){
+                wasClosedByTray = false
                 mainWindow.hide()
             }
         },
@@ -152,6 +157,31 @@ const createTray = () => {
 
 }
 
+const createAuthLaunch = () => {
+    const launcher = new AutoLaunch({
+        name: "ssIntegrador"
+    })
+
+    launcher.enable()
+    .finally(() => {
+        
+        launcher.isEnabled()
+        .then(isEnabled => {
+            if(isEnabled){
+                dispatch("auth-launch:enabled")
+                console.log("Auto Launch ativado")
+            }
+            else{
+                dispatch("auth-launch:disabled")
+                console.log("Auth launch não está ativado")
+            }
+        })
+        .catch(console.log)
+
+    })
+
+}
+
 /**
  * Aguarda a aplicação ser totalmente carregada para criar a janela e a bandeja
  */
@@ -159,6 +189,7 @@ app.on('ready', () => {
     
     createMainWindow()
     createTray()
+    createAuthLaunch()
 
     notifier.on("start-processing", () => {
         mainWindow.webContents.send("start-processing")
