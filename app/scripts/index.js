@@ -55,6 +55,14 @@ document.addEventListener('DOMContentLoaded', () => {
         handleNetworkStatus()
     })
 
+    ipcRenderer.on("update:start", text => {
+        updateButtonUI("loading", text)
+    })
+
+    ipcRenderer.on("update:end", () => {
+        handleNetworkStatus()
+    })
+
     /**
      * Adiciona os eventos de mudança de internet
      */

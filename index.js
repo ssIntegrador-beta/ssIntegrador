@@ -8,6 +8,40 @@ const electron     = require("electron")
 const url          = require("url")
 const path         = require("path")
 const AutoLaunch   = require("auto-launch")
+const { autoUpdater }  = require("electron-updater")
+
+const sendStatusToWindow = text => {
+    console.log(text)
+    mainWindow.webContents.send("update:start", text)
+}
+
+autoUpdater.on('checking-for-update', () => {
+    sendStatusToWindow('Procurando por atualizações...')
+})
+autoUpdater.on('update-available', (ev, info) => {
+    sendStatusToWindow('Encontramos uma atualização disponível')
+})
+autoUpdater.on('update-not-available', (ev, info) => {
+    sendStatusToWindow('Nenhuma atualizaçao disponível')
+    setTimeout(() => mainWindow.webContents.send("update:end"), 5000)
+})
+autoUpdater.on('error', (ev, err) => {
+    sendStatusToWindow('Ocorreu um erro ao atualizar a aplicação')
+})
+autoUpdater.on('download-progress', (ev, progressObj) => {
+    sendStatusToWindow(`Baixando atualização "${progressObj.percent}"%`)
+})
+autoUpdater.on('update-downloaded', (ev, info) => {
+    sendStatusToWindow('Instalando atualizações')
+})
+
+autoUpdater.on('update-downloaded', (ev, info) => {
+    setTimeout(function() {
+        mainWindow.webContents.send("update:end")
+        autoUpdater.quitAndInstall()
+    }, 2000)
+})
+
 
 /**
  * Importa o módulo responsável por gerenciar os eventos
@@ -190,6 +224,7 @@ app.on('ready', () => {
     createMainWindow()
     createTray()
     createAuthLaunch()
+    autoUpdater.checkForUpdates()
 
     notifier.on("start-processing", () => {
         mainWindow.webContents.send("start-processing")
